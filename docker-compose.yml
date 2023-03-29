@@ -1,0 +1,29 @@
+version: '3.4'
+services:
+  division-service:
+    image: northamerica-northeast1-docker.pkg.dev/progi-dev-test/progione-test/division-api:1.0.8       
+    ports:
+      - "8001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ServicesUrl__MultiplicationService=http://multiplication-service
+    depends_on:
+       - multiplication-service
+  multiplication-service:
+    image: northamerica-northeast1-docker.pkg.dev/progi-dev-test/progione-test/multiplication-api:1.0.1
+    ports:
+      - "8002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+  addition-service:
+    image: northamerica-northeast1-docker.pkg.dev/progi-dev-test/progione-test/addition-api:1.1.2
+    ports:
+      - "8003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - Microservices__DivisionApi=http://division-service/divide/
+    depends_on:
+      - division-service
